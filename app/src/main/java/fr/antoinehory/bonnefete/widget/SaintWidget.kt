@@ -100,43 +100,36 @@ class SaintWidget : GlanceAppWidget() {
             modifier = GlanceModifier
                 .fillMaxSize()
                 .appWidgetBackground()
-                .background(ImageProvider(R.drawable.widget_frame)),
+                .cornerRadius(16.dp),
             contentAlignment = Alignment.Center
         ) {
-            Box(
+            Image(
+                provider = ImageProvider(R.drawable.widget_background),
+                contentDescription = null,
+                modifier = GlanceModifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+            
+            Column(
                 modifier = GlanceModifier
                     .fillMaxSize()
-                    .padding(4.dp),
-                contentAlignment = Alignment.Center
+                    .padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(
-                    provider = ImageProvider(R.drawable.widget_background),
-                    contentDescription = null,
-                    modifier = GlanceModifier.fillMaxSize().cornerRadius(12.dp),
-                    contentScale = ContentScale.Crop
-                )
-                
-                Column(
-                    modifier = GlanceModifier
-                        .fillMaxSize()
-                        .padding(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    if (titleBitmap != null) {
-                        Image(
-                            provider = ImageProvider(titleBitmap),
-                            contentDescription = "Bonne Fête",
-                            modifier = GlanceModifier.defaultWeight()
-                        )
-                    }
-                    if (nameBitmap != null) {
-                        Image(
-                            provider = ImageProvider(nameBitmap),
-                            contentDescription = "$title $name",
-                            modifier = GlanceModifier.defaultWeight()
-                        )
-                    }
+                if (titleBitmap != null) {
+                    Image(
+                        provider = ImageProvider(titleBitmap),
+                        contentDescription = "Bonne Fête",
+                        modifier = GlanceModifier.defaultWeight()
+                    )
+                }
+                if (nameBitmap != null) {
+                    Image(
+                        provider = ImageProvider(nameBitmap),
+                        contentDescription = "$title $name",
+                        modifier = GlanceModifier.defaultWeight()
+                    )
                 }
             }
         }

@@ -18,11 +18,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -35,6 +33,12 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import fr.antoinehory.bonnefete.ui.MainViewModel
 import fr.antoinehory.bonnefete.ui.theme.BonneFeteTheme
+import fr.antoinehory.bonnefete.ui.screens.HomeScreen
+import fr.antoinehory.bonnefete.ui.screens.SaintsListScreen
+import fr.antoinehory.bonnefete.ui.screens.InfoScreen
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 
@@ -47,7 +51,26 @@ class MainActivity : ComponentActivity() {
         setContent {
             BonneFeteTheme {
                 RequestPermissions()
-                MainScreen()
+                
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "home") {
+                    composable("home") {
+                        HomeScreen(
+                            onNavigateToSettings = { navController.navigate("settings") },
+                            onNavigateToList = { navController.navigate("list") },
+                            onNavigateToInfo = { navController.navigate("info") }
+                        )
+                    }
+                    composable("settings") {
+                        MainScreen(onNavigateBack = { navController.popBackStack() })
+                    }
+                    composable("list") {
+                        SaintsListScreen(onNavigateBack = { navController.popBackStack() })
+                    }
+                    composable("info") {
+                        InfoScreen(onNavigateBack = { navController.popBackStack() })
+                    }
+                }
             }
         }
     }
@@ -82,11 +105,30 @@ fun RequestPermissions() {
 }
 
 @Composable
-fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
+fun MainScreen(
+    onNavigateBack: () -> Unit,
+    viewModel: MainViewModel = hiltViewModel()
+) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            @OptIn(ExperimentalMaterial3Api::class)
+            TopAppBar(
+                title = { Text("Paramètres") },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Retour"
+                        )
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)

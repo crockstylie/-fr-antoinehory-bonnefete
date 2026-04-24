@@ -20,4 +20,7 @@ interface SaintDao {
 
     @Query("SELECT COUNT(*) FROM saints")
     suspend fun getCount(): Int
+
+    @Query("SELECT * FROM saints ORDER BY month ASC, day ASC")
+    fun getAllSaints(): Flow<List<SaintEntity>>
 }

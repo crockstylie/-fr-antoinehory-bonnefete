@@ -30,6 +30,13 @@ class SaintRepository @Inject constructor(
     }
 
     /**
+     * Returns all saints ordered by date.
+     */
+    fun getAllSaints(): Flow<List<SaintEntity>> {
+        return saintDao.getAllSaints()
+    }
+
+    /**
      * Populates the database with initial data from assets if empty.
      */
     suspend fun populateDatabaseIfNeeded() = withContext(Dispatchers.IO) {

@@ -70,6 +70,13 @@ class MainViewModel @Inject constructor(
         initialValue = MainUiState()
     )
 
+    val allSaints = saintRepository.getAllSaints()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
     fun updateNotificationTime(hour: Int, minute: Int) {
         viewModelScope.launch {
             preferencesRepository.updateNotificationTime(hour, minute)
