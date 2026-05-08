@@ -1,63 +1,42 @@
-# Bonne Fête ! ⚜️
+# Bonne Fête !
 
-**Ne ratez plus jamais la fête de vos proches avec une touche d'élégance médiévale.**
+Application Android permettant de suivre le calendrier des saints et de recevoir des notifications quotidiennes personnalisées.
 
-Bonne Fête est l'application compagnon idéale pour célébrer les traditions françaises. Chaque jour, découvrez le saint à l'honneur et recevez une notification personnalisée pour ne jamais oublier de souhaiter une "Bonne Fête" à vos amis et votre famille.
+## Fonctionnalités
 
----
+- **Widget d'écran d'accueil** : Affiche le saint du jour avec un design soigné et une typographie personnalisée.
+- **Notifications quotidiennes** : Rappels programmables à l'heure souhaitée.
+- **Intégration des contacts** : Option pour ne recevoir de notifications que si le saint du jour figure dans vos contacts (recherche insensible aux accents et à la casse).
+- **Navigation intuitive** : Accès rapide aux paramètres, à la liste complète des saints et aux informations développeur.
 
-## 🌟 Fonctionnalités Clés
+## Caractéristiques techniques
 
-### 🏰 Un Widget d'exception
-Décorez votre écran d'accueil avec notre widget au design unique :
-- **Style Enluminure** : Une esthétique inspirée des manuscrits médiévaux.
-- **Bordure Or Vieilli** : Un cadre élégant qui s'adapte parfaitement aux arrondis de votre téléphone.
-- **Typographie Médiévale** : Le nom du saint du jour affiché avec une police de caractère authentique.
+- **Jetpack Compose & Glance** : Interface utilisateur moderne et widget réactif.
+- **Architecture MVVM** : Séparation claire des responsabilités pour une meilleure maintenabilité.
+- **AlarmManager (Exact Alarms)** : Déclenchement des notifications à la seconde près.
+- **Room Database** : Stockage local et performant du calendrier des saints.
+- **Hilt** : Injection de dépendances pour un code modulaire.
+- **Jetpack DataStore** : Gestion robuste des préférences utilisateur.
 
-### 👤 Intégration Intelligente des Contacts
-L'application analyse votre répertoire pour vous prévenir uniquement quand cela compte :
-- **Recherche Avancée** : Notre algorithme ignore les accents, les majuscules et les préfixes "Saint" pour un matching parfait (ex: "Saint Fidèle" trouvera votre contact "fidele" ou "FIDÈLE").
-- **Filtrage Personnalisé** : Choisissez de recevoir des notifications pour tous les saints ou uniquement pour les prénoms présents dans vos contacts.
+## Confidentialité
 
-### ⏰ Notifications de Haute Précision
-Planifiez votre rappel quotidien à l'heure exacte qui vous convient :
-- **Précision à la seconde** : Grâce à notre système d'alarme optimisé, recevez votre rappel pile au moment voulu.
-- **Contenu Personnalisé** : La notification vous indique directement qui fête son saint parmi vos proches.
+L'analyse de vos contacts s'effectue exclusivement en local sur votre appareil. Aucune donnée personnelle n'est collectée ou transmise à des serveurs tiers.
 
 ---
 
-## 🛠 Fiche technique (Play Store)
+## Informations Play Store
 
-### Titre de l'application
-**Bonne Fête ! - Saints & Widget**
+### Titre
+**Bonne Fête ! - Saints & Rappels**
 
 ### Description Courte
-Ne ratez plus la fête de vos contacts ! Widget médiéval élégant et rappels précis.
+Ne ratez plus la fête de vos contacts ! Widget élégant et notifications précises.
 
 ### Description Longue
-Redécouvrez la tradition des fêtes de prénoms avec une application moderne au charme ancien.
+Bonne Fête est l'outil indispensable pour célébrer les traditions du calendrier français.
 
-Pourquoi installer Bonne Fête ?
-1. **Élégance visuelle** : Profitez d'un widget magnifique en "Or Vieilli" qui transforme votre écran d'accueil.
-2. **Discrétion & Utilité** : Configurez l'appli pour n'être alerté que si un de vos contacts est concerné. Plus de notifications inutiles !
-3. **Simplicité** : Une interface épurée, une configuration en deux clics et une fiabilité totale.
+- **Personnalisation** : Choisissez votre heure de rappel préférée.
+- **Intelligence** : L'appli détecte automatiquement si l'un de vos proches fête son prénom aujourd'hui.
+- **Esthétique** : Un widget épuré qui s'intègre parfaitement à votre thème Android.
 
-Que vous soyez attaché aux traditions ou que vous cherchiez simplement une manière élégante de penser à vos proches, Bonne Fête est l'outil qu'il vous faut.
-
----
-
-## 🛡️ Confidentialité
-Nous respectons votre vie privée :
-- Vos contacts sont analysés **uniquement localement** sur votre téléphone.
-- Aucune donnée personnelle n'est envoyée vers des serveurs externes.
-- L'application fonctionne totalement hors-ligne.
-
----
-
-## 🚀 Installation & Développement
-Projet Android moderne développé avec :
-- **Kotlin** & **Jetpack Compose**
-- **Jetpack Glance** (Widgets)
-- **Room** (Base de données locale des saints)
-- **Hilt** (Injection de dépendances)
-- **AlarmManager** (Planification de haute précision)
+Simple, efficace et respectueuse de votre vie privée.

@@ -26,8 +26,8 @@ class NotificationService @Inject constructor(
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Bonne Fête"
-            val descriptionText = "Notifications pour les fêtes du jour"
+            val name = context.getString(R.string.notif_channel_name)
+            val descriptionText = context.getString(R.string.notif_channel_desc)
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(channelId, name, importance).apply {
                 description = descriptionText
@@ -38,14 +38,15 @@ class NotificationService @Inject constructor(
 
     fun sendSaintNotification(title: String, name: String, matches: List<String>) {
         val contentText = if (matches.isNotEmpty()) {
-            "C'est la fête de ${matches.joinToString(", ")} ! ($title $name)"
+            context.getString(R.string.notif_content_contacts, matches.joinToString(", "), name)
         } else {
-            "Aujourd'hui, c'est la $title $name."
+            context.getString(R.string.notif_content_default, name)
         }
 
         val builder = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.mipmap.ic_launcher_foreground)
-            .setContentTitle("Bonne Fête !")
+            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm) // System alarm icon
+            .setColor(context.getColor(R.color.antique_gold)) // Theme gold color
+            .setContentTitle(context.getString(R.string.bonne_fete))
             .setContentText(contentText)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)

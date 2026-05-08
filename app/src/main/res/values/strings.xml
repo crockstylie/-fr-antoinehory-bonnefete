@@ -1,3 +1,39 @@
 <resources>
     <string name="app_name">Bonne Fête</string>
+
+    <!-- General -->
+    <string name="bonne_fete">Bonne Fête !</string>
+    <string name="back">Retour</string>
+    <string name="unknown">Inconnu</string>
+
+    <!-- Home Screen -->
+    <string name="nav_settings">Paramètres</string>
+    <string name="nav_list">Liste des Saints</string>
+    <string name="nav_info">Informations</string>
+
+    <!-- Settings Screen -->
+    <string name="today_celebration">Aujourd\'hui, nous fêtons :</string>
+    <string name="notification_settings">Paramètres de notification</string>
+    <string name="only_contacts_label">Notifier uniquement si dans les contacts</string>
+    <string name="notification_time_label">Heure de notification</string>
+    <string name="change_time_button">Modifier l\'heure</string>
+    <string name="test_notification_button">Tester la notification immédiatement</string>
+
+    <!-- Saints List Screen -->
+    <string name="saints_calendar_title">Calendrier des Saints</string>
+    <string name="saint_date_format">%1$02d / %2$02d - %3$s</string>
+
+    <!-- Info Screen -->
+    <string name="personal_info_title">Mes informations personnelles</string>
+    <string name="developer_label">Développeur</string>
+    <string name="website_label">Site web</string>
+    <string name="email_label">Email</string>
+    <string name="donate_label">Donate</string>
+    <string name="find_me_on">Retrouvez-moi sur :</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_name">Bonne Fête</string>
+    <string name="notif_channel_desc">Notifications pour les fêtes du jour</string>
+    <string name="notif_content_contacts">C\'est la fête de %1$s ! (%2$s)</string>
+    <string name="notif_content_default">Aujourd\'hui, c\'est la %1$s.</string>
 </resources>

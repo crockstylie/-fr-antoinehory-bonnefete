@@ -11,13 +11,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -28,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -113,16 +108,18 @@ fun MainScreen(
     val context = LocalContext.current
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding(),
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
-                title = { Text("Paramètres") },
+                title = { Text(stringResource(R.string.nav_settings)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Retour"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 }
@@ -137,11 +134,11 @@ fun MainScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Aujourd'hui, nous fêtons :",
+                text = stringResource(R.string.today_celebration),
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = "${uiState.todaySaint?.title ?: ""} ${uiState.todaySaint?.name ?: "..."}".trim(),
+                text = (uiState.todaySaint?.name ?: "...").trim(),
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -149,7 +146,7 @@ fun MainScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             Text(
-                text = "Paramètres de notification",
+                text = stringResource(R.string.notification_settings),
                 style = MaterialTheme.typography.titleLarge
             )
 
@@ -160,7 +157,7 @@ fun MainScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Notifier uniquement si dans les contacts",
+                    text = stringResource(R.string.only_contacts_label),
                     modifier = Modifier.weight(1f)
                 )
                 Switch(
@@ -176,7 +173,7 @@ fun MainScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Heure de notification",
+                    text = stringResource(R.string.notification_time_label),
                     modifier = Modifier.weight(1f)
                 )
                 Text(
@@ -194,7 +191,7 @@ fun MainScreen(
                     true
                 ).show()
             }) {
-                Text("Modifier l'heure")
+                Text(stringResource(R.string.change_time_button))
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -203,7 +200,7 @@ fun MainScreen(
                 onClick = { viewModel.testNotification() },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Tester la notification immédiatement")
+                Text(stringResource(R.string.test_notification_button))
             }
         }
     }

@@ -12,6 +12,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.res.stringResource
+import fr.antoinehory.bonnefete.R
 import fr.antoinehory.bonnefete.ui.MainViewModel
 import java.util.Locale
 
@@ -28,17 +30,18 @@ fun SaintsListScreen(
     onNavigateBack: () -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
-    val saints by viewModel.allSaints.collectAsState(initial = emptyList())
+    val saints by viewModel.allSaints.collectAsState()
 
     Scaffold(
+        modifier = Modifier.systemBarsPadding(),
         topBar = {
             TopAppBar(
-                title = { Text("Calendrier des Saints") },
+                title = { Text(stringResource(R.string.saints_calendar_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Retour"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 }
@@ -54,14 +57,12 @@ fun SaintsListScreen(
                 ListItem(
                     headlineContent = {
                         Text(
-                            text = String.format(
-                                Locale.getDefault(),
-                                "%02d / %02d - %s %s",
+                            text = stringResource(
+                                R.string.saint_date_format,
                                 saint.day,
                                 saint.month,
-                                saint.title,
                                 saint.name
-                            ).trim()
+                            )
                         )
                     },
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)

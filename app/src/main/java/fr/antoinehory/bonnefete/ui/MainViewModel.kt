@@ -21,6 +21,13 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
 
+/**
+ * UI State for the Main screen.
+ * @property todaySaint The saint entity for the current day.
+ * @property notificationHour The hour at which the user wants to be notified.
+ * @property notificationMinute The minute at which the user wants to be notified.
+ * @property onlyContacts Whether to notify only if the saint name matches a contact.
+ */
 data class MainUiState(
     val todaySaint: SaintEntity? = null,
     val notificationHour: Int = 9,
@@ -28,6 +35,10 @@ data class MainUiState(
     val onlyContacts: Boolean = true
 )
 
+/**
+ * ViewModel for the main application logic and settings.
+ * Manages user preferences, saint data, and work scheduling.
+ */
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val saintRepository: SaintRepository,
@@ -77,18 +88,31 @@ class MainViewModel @Inject constructor(
             initialValue = emptyList()
         )
 
+    /**
+     * Updates the notification time in preferences and reschedules the alarm.
+     * @param hour The new hour.
+     * @param minute The new minute.
+     */
     fun updateNotificationTime(hour: Int, minute: Int) {
         viewModelScope.launch {
             preferencesRepository.updateNotificationTime(hour, minute)
         }
     }
 
+    /**
+     * Updates the preference for notifying only if matches are found in contacts.
+     * @param onlyContacts The new preference value.
+     */
     fun updateOnlyContacts(onlyContacts: Boolean) {
         viewModelScope.launch {
             preferencesRepository.updateOnlyContacts(onlyContacts)
         }
     }
 
+    /**
+     * Triggers a manual test of the notification system.
+     * Enqueues a OneTimeWorkRequest for [DailyUpdateWorker] with test flag.
+     */
     fun testNotification() {
         val inputData = Data.Builder()
             .putBoolean("is_test", true)

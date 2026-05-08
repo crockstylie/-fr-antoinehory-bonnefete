@@ -72,8 +72,8 @@ class SaintWidget : GlanceAppWidget() {
             null
         }
 
-        val saintName = saint?.name ?: "Inconnu"
-        val saintTitle = saint?.title ?: ""
+        val saintName = saint?.name ?: context.getString(R.string.unknown)
+        val saintTitle = "" // Removing title/prefix permanently as requested
 
         provideContent {
             GlanceTheme(colors = MedievalGlanceColorScheme) {
@@ -93,8 +93,8 @@ class SaintWidget : GlanceAppWidget() {
         val responsiveFactor = minOf(widthFactor, heightFactor).coerceIn(1f, 4f)
         
         // Generate Bitmaps for the text to use the custom font
-        val titleBitmap = createTextBitmap(context, "Bonne Fête", (14 * responsiveFactor).toInt())
-        val nameBitmap = createTextBitmap(context, "$title $name".trim(), (18 * responsiveFactor).toInt())
+        val titleBitmap = createTextBitmap(context, context.getString(R.string.bonne_fete), (14 * responsiveFactor).toInt())
+        val nameBitmap = createTextBitmap(context, name.trim(), (18 * responsiveFactor).toInt())
         
         Box(
             modifier = GlanceModifier

@@ -29,14 +29,15 @@ import fr.antoinehory.bonnefete.R
 @Composable
 fun InfoScreen(onNavigateBack: () -> Unit) {
     Scaffold(
+        modifier = Modifier.systemBarsPadding(),
         topBar = {
             TopAppBar(
-                title = { Text("Informations") },
+                title = { Text(stringResource(R.string.nav_info)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Retour"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 }
@@ -53,7 +54,7 @@ fun InfoScreen(onNavigateBack: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Mes informations personnelles",
+                text = stringResource(R.string.personal_info_title),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center,
@@ -62,15 +63,15 @@ fun InfoScreen(onNavigateBack: () -> Unit) {
                     .padding(vertical = 24.dp)
             )
 
-            InfoItemColumn(label = "Développeur", value = "Antoine Crock HORY")
-            InfoItemColumn(label = "Site web", value = "antoinehory.fr", isLink = true, linkUri = "https://antoinehory.fr")
-            InfoItemColumn(label = "Email", value = "contact@antoinehory.fr", isLink = true, linkUri = "mailto:contact@antoinehory.fr")
-            InfoItemColumn(label = "Donate", value = "paypal.me/kuroku", isLink = true, linkUri = "https://paypal.me/kuroku")
+            InfoItemColumn(label = stringResource(R.string.developer_label), value = "Antoine Crock HORY")
+            InfoItemColumn(label = stringResource(R.string.website_label), value = "antoinehory.fr", isLink = true, linkUri = "https://antoinehory.fr")
+            InfoItemColumn(label = stringResource(R.string.email_label), value = "contact@antoinehory.fr", isLink = true, linkUri = "mailto:contact@antoinehory.fr")
+            InfoItemColumn(label = stringResource(R.string.donate_label), value = "paypal.me/kuroku", isLink = true, linkUri = "https://paypal.me/kuroku")
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Retrouvez-moi sur :",
+                text = stringResource(R.string.find_me_on),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center,
@@ -84,11 +85,36 @@ fun InfoScreen(onNavigateBack: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Note: Social icons are missing in current project, using text buttons as fallback or placehoders
-                // For production, you should add the ic_linkedin_logo etc. to drawables
-                Text("LinkedIn", modifier = Modifier.clickable { /* link */ })
-                Text("Behance", modifier = Modifier.clickable { /* link */ })
-                Text("Instagram", modifier = Modifier.clickable { /* link */ })
+                SocialMediaIcon(
+                    iconResId = R.drawable.ic_linkedin_logo,
+                    contentDescription = "linkedin_profile",
+                    url = "https://www.linkedin.com/in/antoinehory/"
+                )
+                SocialMediaIcon(
+                    iconResId = R.drawable.ic_behance_logo,
+                    contentDescription = "behance_profile",
+                    url = "https://www.behance.net/antoine-hory"
+                )
+                SocialMediaIcon(
+                    iconResId = R.drawable.ic_instagram_logo,
+                    contentDescription = "instagram_profile",
+                    url = "https://www.instagram.com/antoine.hory.web/"
+                )
+                SocialMediaIcon(
+                    iconResId = R.drawable.ic_facebook_logo,
+                    contentDescription = "facebook_profile",
+                    url = "https://www.facebook.com/antoinehory/"
+                )
+                SocialMediaIcon(
+                    iconResId = R.drawable.ic_spotify_logo,
+                    contentDescription = "spotify_profile",
+                    url = "https://open.spotify.com/user/crockstylie"
+                )
+                SocialMediaIcon(
+                    iconResId = R.drawable.ic_steam_logo,
+                    contentDescription = "steam_profile",
+                    url = "https://steamcommunity.com/id/crockstylie/"
+                )
             }
         }
     }
@@ -139,5 +165,35 @@ fun InfoItemColumn(
                 modifier = Modifier.fillMaxWidth()
             )
         }
+    }
+}
+
+/**
+ * A composable that displays a clickable social media icon.
+ * Clicking the icon opens the provided [url].
+ *
+ * @param iconResId The drawable resource ID for the social media icon.
+ * @param contentDescription A textual description of the icon for accessibility.
+ * @param url The URL string to open when the icon is clicked.
+ * @param modifier Optional [Modifier] to be applied to the IconButton.
+ */
+@Composable
+fun SocialMediaIcon(
+    iconResId: Int,
+    contentDescription: String,
+    url: String,
+    modifier: Modifier = Modifier
+) {
+    val uriHandler = LocalUriHandler.current // Used to open URIs.
+    IconButton(
+        onClick = { uriHandler.openUri(url) }, // Open URL on click.
+        modifier = modifier
+    ) {
+        Icon(
+            painter = painterResource(id = iconResId),
+            contentDescription = contentDescription,
+            tint = Color.Unspecified, // Use original icon colors, do not apply tint.
+            modifier = Modifier.size(40.dp) // Fixed size for the icon.
+        )
     }
 }

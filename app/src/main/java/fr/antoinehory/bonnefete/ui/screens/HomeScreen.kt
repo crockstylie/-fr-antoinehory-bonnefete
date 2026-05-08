@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
@@ -15,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import fr.antoinehory.bonnefete.R
 
 /**
@@ -33,7 +35,11 @@ fun HomeScreen(
 ) {
     val royalBlue = Color(0xFF4169E1)
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .navigationBarsPadding()
+    ) {
         // Background: Splash Screen Image
         Image(
             painter = painterResource(id = R.drawable.ic_splash),
@@ -57,7 +63,7 @@ fun HomeScreen(
                 contentColor = Color.White,
                 shape = CircleShape
             ) {
-                Icon(Icons.Default.Settings, contentDescription = "Paramètres")
+                Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.nav_settings))
             }
 
             FloatingActionButton(
@@ -66,7 +72,7 @@ fun HomeScreen(
                 contentColor = Color.White,
                 shape = CircleShape
             ) {
-                Icon(Icons.Default.List, contentDescription = "Liste des Saints")
+                Icon(Icons.AutoMirrored.Filled.List, contentDescription = stringResource(R.string.nav_list))
             }
 
             FloatingActionButton(
@@ -75,7 +81,7 @@ fun HomeScreen(
                 contentColor = Color.White,
                 shape = CircleShape
             ) {
-                Icon(Icons.Default.Info, contentDescription = "Informations")
+                Icon(Icons.Default.Info, contentDescription = stringResource(R.string.nav_info))
             }
         }
     }
