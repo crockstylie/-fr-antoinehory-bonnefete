@@ -10,11 +10,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -25,16 +24,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
-import fr.antoinehory.bonnefete.ui.MainViewModel
-import fr.antoinehory.bonnefete.ui.theme.BonneFeteTheme
-import fr.antoinehory.bonnefete.ui.screens.HomeScreen
-import fr.antoinehory.bonnefete.ui.screens.SaintsListScreen
-import fr.antoinehory.bonnefete.ui.screens.InfoScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import fr.antoinehory.bonnefete.ui.MainViewModel
+import fr.antoinehory.bonnefete.ui.screens.HomeScreen
+import fr.antoinehory.bonnefete.ui.screens.InfoScreen
+import fr.antoinehory.bonnefete.ui.screens.SaintsListScreen
+import fr.antoinehory.bonnefete.ui.theme.BonneFeteTheme
 import java.util.Locale
 
 @AndroidEntryPoint
@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             BonneFeteTheme {
                 RequestPermissions()
-                
+
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "home") {
                     composable("home") {
@@ -75,11 +75,11 @@ class MainActivity : ComponentActivity() {
 fun RequestPermissions() {
     val context = LocalContext.current
     val permissionsToRequest = mutableListOf<String>()
-    
+
     if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
         permissionsToRequest.add(Manifest.permission.READ_CONTACTS)
     }
-    
+
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
@@ -106,6 +106,14 @@ fun MainScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            viewModel.testNotification()
+        }
+    }
 
     Scaffold(
         modifier = Modifier
@@ -181,8 +189,8 @@ fun MainScreen(
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
-            
-            Button(onClick = { 
+
+            Button(onClick = {
                 TimePickerDialog(
                     context,
                     { _, hour, minute -> viewModel.updateNotificationTime(hour, minute) },
@@ -197,7 +205,15 @@ fun MainScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { viewModel.testNotification() },
+                onClick = {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    } else {
+                        viewModel.testNotification()
+                    }
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(stringResource(R.string.test_notification_button))

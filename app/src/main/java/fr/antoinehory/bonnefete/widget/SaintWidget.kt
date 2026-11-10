@@ -5,12 +5,14 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Build
 import android.view.WindowManager
 import android.widget.RemoteViews
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
 import androidx.datastore.preferences.core.Preferences
@@ -35,7 +37,10 @@ import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.ContentScale
+import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.fillMaxWidth
+import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.state.GlanceStateDefinition
 import androidx.glance.state.PreferencesGlanceStateDefinition
@@ -49,6 +54,7 @@ import fr.antoinehory.bonnefete.ui.theme.MedievalGlanceColorScheme
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 class SaintWidget : GlanceAppWidget() {
 
@@ -129,23 +135,27 @@ class SaintWidget : GlanceAppWidget() {
     @Composable
     private fun WidgetContent(name: String, backgroundBitmap: Bitmap?) {
         val context = LocalContext.current
-        val size = LocalSize.current
+        val size: DpSize = LocalSize.current
 
-        // Use the minimum ratio of both dimensions to ensure text fits
-        val widthFactor = size.width.value / 110f
-        val heightFactor = size.height.value / 70f
-        val responsiveFactor = minOf(widthFactor, heightFactor).coerceIn(1f, 4f)
+        val widthDp = size.width.value.coerceAtLeast(110f)
+        val heightDp = size.height.value.coerceAtLeast(56f)
 
-        // Generate Bitmaps for the text to use the custom medieval font
-        val titleBitmap = createTextBitmap(
+        // Larger, highly legible medieval typography fitted to the widget bounds
+        val titleBitmap = createFittedTextBitmap(
             context = context,
             text = context.getString(R.string.bonne_fete),
-            fontSizeDp = (14 * responsiveFactor).toInt()
+            maxWidthDp = widthDp - 12f,
+            maxHeightDp = heightDp * 0.36f,
+            preferredFontSizeDp = heightDp * 0.27f,
+            textColor = context.getColor(R.color.antique_gold)
         )
-        val nameBitmap = createTextBitmap(
+        val nameBitmap = createFittedTextBitmap(
             context = context,
             text = name.trim(),
-            fontSizeDp = (18 * responsiveFactor).toInt()
+            maxWidthDp = widthDp - 12f,
+            maxHeightDp = heightDp * 0.54f,
+            preferredFontSizeDp = heightDp * 0.44f,
+            textColor = Color.parseColor("#FFF4C2") // Brighter warm gold/parchment for maximum contrast on the saint name
         )
 
         Box(
@@ -174,7 +184,7 @@ class SaintWidget : GlanceAppWidget() {
             Column(
                 modifier = GlanceModifier
                     .fillMaxSize()
-                    .padding(8.dp),
+                    .padding(horizontal = 6.dp, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -182,41 +192,91 @@ class SaintWidget : GlanceAppWidget() {
                     Image(
                         provider = ImageProvider(titleBitmap),
                         contentDescription = context.getString(R.string.bonne_fete),
-                        modifier = GlanceModifier.defaultWeight()
+                        contentScale = ContentScale.Fit,
+                        modifier = GlanceModifier
+                            .fillMaxWidth()
+                            .defaultWeight()
                     )
                 }
+                Spacer(modifier = GlanceModifier.height(2.dp))
                 if (nameBitmap != null) {
                     Image(
                         provider = ImageProvider(nameBitmap),
                         contentDescription = name,
-                        modifier = GlanceModifier.defaultWeight()
+                        contentScale = ContentScale.Fit,
+                        modifier = GlanceModifier
+                            .fillMaxWidth()
+                            .defaultWeight()
                     )
                 }
             }
         }
     }
 
-    private fun createTextBitmap(context: Context, text: String, fontSizeDp: Int): Bitmap? {
+    /**
+     * Renders text with the custom medieval font at a large, legible size, automatically shrinking
+     * the font size if the Saint name is very long so it always fits within [maxWidthDp] x [maxHeightDp],
+     * with a dark drop shadow and subtle stroke for high contrast against the illuminated background.
+     */
+    private fun createFittedTextBitmap(
+        context: Context,
+        text: String,
+        maxWidthDp: Float,
+        maxHeightDp: Float,
+        preferredFontSizeDp: Float,
+        textColor: Int
+    ): Bitmap? {
+        if (text.isBlank()) return null
         val typeface = ResourcesCompat.getFont(context, R.font.medieval_font) ?: Typeface.DEFAULT
         val density = context.resources.displayMetrics.density
-        val fontSizePx = fontSizeDp * density
+
+        val maxWidthPx = (maxWidthDp * density).coerceAtLeast(40f)
+        val maxHeightPx = (maxHeightDp * density).coerceAtLeast(24f)
+        var currentFontSizePx = (preferredFontSizeDp * density).coerceAtLeast(18f * density)
+        val minFontSizePx = 12f * density
 
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = context.getColor(R.color.antique_gold)
             this.typeface = typeface
-            textSize = fontSizePx
             textAlign = Paint.Align.CENTER
+            isFakeBoldText = true
         }
 
-        val baseline = -paint.ascent()
-        val width = (paint.measureText(text) + 0.5f).toInt()
-        val height = (baseline + paint.descent() + 0.5f).toInt()
+        // Auto-fit text size so long Saint names fit the width without making short names tiny
+        while (currentFontSizePx > minFontSizePx) {
+            paint.textSize = currentFontSizePx
+            val measuredWidth = paint.measureText(text) + 12f * density
+            val measuredHeight = (-paint.ascent() + paint.descent()) + 8f * density
+            if (measuredWidth <= maxWidthPx && measuredHeight <= maxHeightPx) {
+                break
+            }
+            currentFontSizePx -= 1.5f * density
+        }
+        paint.textSize = currentFontSizePx
 
-        if (width <= 0 || height <= 0) return null
+        val shadowPadding = (4f * density).roundToInt().coerceAtLeast(4)
+        val baseline = -paint.ascent() + shadowPadding
+        val width = (paint.measureText(text) + shadowPadding * 2 + 0.5f).toInt().coerceAtLeast(1)
+        val height = (baseline + paint.descent() + shadowPadding + 0.5f).toInt().coerceAtLeast(1)
 
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-        canvas.drawText(text, width / 2f, baseline, paint)
+        val centerX = width / 2f
+
+        // 1. Dark outline + drop shadow for strong legibility over the textured blue background
+        val outlinePaint = Paint(paint).apply {
+            style = Paint.Style.STROKE
+            strokeWidth = (2.2f * density).coerceAtLeast(2f)
+            strokeJoin = Paint.Join.ROUND
+            color = Color.argb(220, 8, 16, 30)
+            setShadowLayer(4f * density, 0f, 2f * density, Color.argb(230, 0, 0, 0))
+        }
+        canvas.drawText(text, centerX, baseline, outlinePaint)
+
+        // 2. Main golden fill
+        paint.style = Paint.Style.FILL
+        paint.color = textColor
+        canvas.drawText(text, centerX, baseline, paint)
+
         return bitmap
     }
 

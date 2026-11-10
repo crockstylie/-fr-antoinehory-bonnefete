@@ -40,4 +40,8 @@ Légende : `[x]` Terminé | `[/]` En cours | `[ ]` À faire
 - [x] Correction du bug de correspondance des contacts (`"Clément"` ne doit plus notifier pour `"Clémentine"`) :
     - Remplacement du `.contains()` en sous-chaîne par une tokenisation lexicale stricte par mot entier (`doesContactMatchSaint`) dans `ContactService`
     - Gestion des prénoms composés (`Jean-Baptiste`), des épithètes historiques (`François d'Assise`, `Antoine de Padoue`) et exclusion des fêtes non-prénoms (`Jour de l'An`, `Fête Nationale`, etc.)
+- [x] Amélioration de la lisibilité du Widget, du texte de notification et de la stabilité sur Android 17 (Pixel 10 Pro XL) :
+    - Mise à jour du texte de notification par défaut : *« Aujourd'hui on souhaite une bonne fête à %1$s »* et passage du canal en `IMPORTANCE_HIGH` avec `BigTextStyle`
+    - Agrandissement dynamique et amélioration du contraste du texte du Widget (`createFittedTextBitmap` avec contour sombre, ombre portée et mise à l'échelle `ContentScale.Fit` occupant toute la largeur)
+    - Correction du double appel `goAsync()` dans `SaintWidgetReceiver.onUpdate()` (car `GlanceAppWidgetReceiver.onUpdate()` l'appelle déjà en interne)
 - [x] Mise à jour et validation des tests unitaires JVM (`ContactServiceTest`, `MainViewModelTest`, `SaintRepositoryTest`)

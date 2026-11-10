@@ -17,6 +17,10 @@ Toutes les modifications notables apportées à ce projet sont documentées dans
     - Écoute des événements système `ACTION_DATE_CHANGED`, `ACTION_TIME_SET` et `ACTION_TIMEZONE_CHANGED` dans `SaintWidgetReceiver` et activation d'un intervalle de secours `updatePeriodMillis="1800000"` dans `saint_widget_info.xml`.
 - **Précision de la détection des contacts (`Clément` ≠ `Clémentine`)** :
     - Remplacement de la recherche par sous-chaîne (`.contains()`) par une comparaison lexicale stricte par **mot entier (token exact)** dans `ContactService`. Un saint comme *« Clément »* ne déclenche plus de notification erronée pour un contact nommé *« Clémentine »*, tout en gérant les prénoms composés (*Jean-Baptiste*) et les épithètes historiques (*François d'Assise*).
+- **Lisibilité du Widget & Libellé des Notifications** :
+    - Texte de notification corrigé : *« Aujourd'hui on souhaite une bonne fête à [Prénom] »* et canal de notification haute priorité (`IMPORTANCE_HIGH`).
+    - Agrandissement du texte du widget avec mise à l'échelle automatique (`createFittedTextBitmap` + contour sombre et ombre portée) pour une lisibilité optimale quelle que soit la taille du widget.
+    - Correction d'un crash `NullPointerException` dans `SaintWidgetReceiver.onUpdate` dû au double appel de `goAsync()`.
 
 ---
 
