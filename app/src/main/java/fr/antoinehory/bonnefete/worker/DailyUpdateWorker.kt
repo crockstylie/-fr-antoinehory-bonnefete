@@ -7,17 +7,16 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import fr.antoinehory.bonnefete.data.repository.SaintRepository
-import fr.antoinehory.bonnefete.data.repository.UserPreferencesRepository
-import fr.antoinehory.bonnefete.domain.ContactService
-import fr.antoinehory.bonnefete.domain.NotificationService
-import fr.antoinehory.bonnefete.widget.SaintWidget
-import androidx.glance.appwidget.updateAll
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
+import fr.antoinehory.bonnefete.data.repository.SaintRepository
+import fr.antoinehory.bonnefete.data.repository.UserPreferencesRepository
+import fr.antoinehory.bonnefete.domain.ContactService
+import fr.antoinehory.bonnefete.domain.NotificationService
 import fr.antoinehory.bonnefete.domain.WorkScheduler
+import fr.antoinehory.bonnefete.widget.SaintWidget
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
 
@@ -42,7 +41,7 @@ class DailyUpdateWorker @AssistedInject constructor(
     }
 
     override suspend fun doWork(): Result {
-        Log.d(TAG, "Starting DailyUpdateWorker execution (ID: ${id})")
+        Log.d(TAG, "Starting DailyUpdateWorker execution (ID: $id)")
         try {
             // 1. Initialize data
             saintRepository.populateDatabaseIfNeeded()
@@ -75,9 +74,9 @@ class DailyUpdateWorker @AssistedInject constructor(
                 Log.d(TAG, "Notification skipped (onlyContacts=true and no matches)")
             }
 
-            // 6. Update Widget
-            Log.d(TAG, "Updating widget")
-            SaintWidget().updateAll(applicationContext)
+            // 6. Push state & Update Widget
+            Log.d(TAG, "Updating widget via pushWidgetUpdate")
+            SaintWidget.pushWidgetUpdate(applicationContext, saintRepository)
 
             // 7. Schedule next day
             val time = preferencesRepository.notificationTime.first()
@@ -87,7 +86,7 @@ class DailyUpdateWorker @AssistedInject constructor(
             )
             Log.d(TAG, "Rescheduling for tomorrow at ${time.first}:${time.second}")
             entryPoint.workScheduler().scheduleDailyUpdate(time.first, time.second)
-            
+
             return Result.success()
         } catch (e: Exception) {
             Log.e(TAG, "Error in DailyUpdateWorker", e)

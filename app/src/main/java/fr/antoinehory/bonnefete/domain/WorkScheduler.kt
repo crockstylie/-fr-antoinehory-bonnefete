@@ -6,8 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
-import fr.antoinehory.bonnefete.worker.NotificationReceiver
+import fr.antoinehory.bonnefete.data.repository.UserPreferencesRepository
 import fr.antoinehory.bonnefete.widget.WidgetRefreshReceiver
+import fr.antoinehory.bonnefete.worker.NotificationReceiver
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
 import javax.inject.Inject
@@ -32,14 +33,14 @@ class WorkScheduler @Inject constructor(
      * Reschedules all necessary alarms (notifications and widget refresh)
      * using stored preferences.
      */
-    suspend fun rescheduleAll(preferencesRepository: fr.antoinehory.bonnefete.data.repository.UserPreferencesRepository) {
+    suspend fun rescheduleAll(preferencesRepository: UserPreferencesRepository) {
         val (hour, minute) = preferencesRepository.notificationTime.first()
         scheduleDailyUpdate(hour, minute)
     }
 
     private fun scheduleNotificationAlarm(hour: Int, minute: Int) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        
+
         val calendar = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, hour)
             set(Calendar.MINUTE, minute)
@@ -48,7 +49,7 @@ class WorkScheduler @Inject constructor(
         }
 
         val now = Calendar.getInstance()
-        if (calendar.before(now)) {
+        if (calendar.timeInMillis <= now.timeInMillis + 1000L) {
             calendar.add(Calendar.DAY_OF_YEAR, 1)
         }
 
@@ -80,17 +81,17 @@ class WorkScheduler @Inject constructor(
 
     fun scheduleMidnightRefresh() {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        
-        // Schedule for 00:01 AM
+
+        // Schedule for 00:00:05 AM (5 seconds past midnight)
         val calendar = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 1)
-            set(Calendar.SECOND, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 5)
             set(Calendar.MILLISECOND, 0)
         }
 
         val now = Calendar.getInstance()
-        if (calendar.before(now)) {
+        if (calendar.timeInMillis <= now.timeInMillis + 1000L) {
             calendar.add(Calendar.DAY_OF_YEAR, 1)
         }
 

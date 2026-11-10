@@ -8,25 +8,29 @@ plugins {
 
 android {
     namespace = "fr.antoinehory.bonnefete"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "fr.antoinehory.bonnefete"
         minSdk = 26 // Increased for better WorkManager and Glance support
-        targetSdk = 35
-        versionCode = 2
-        versionName = "1.1.0"
+        targetSdk = 37
+        versionCode = 3
+        versionName = "1.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
         }
     }
     compileOptions {
@@ -46,8 +50,6 @@ android {
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material.icons.extended)

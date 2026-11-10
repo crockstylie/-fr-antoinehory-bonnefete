@@ -1,42 +1,61 @@
-# Bonne Fête !
+# 📜 Bonne Fête !
 
-Application Android permettant de suivre le calendrier des saints et de recevoir des notifications quotidiennes personnalisées.
-
-## Fonctionnalités
-
-- **Widget d'écran d'accueil** : Affiche le saint du jour avec un design soigné et une typographie personnalisée.
-- **Notifications quotidiennes** : Rappels programmables à l'heure souhaitée.
-- **Intégration des contacts** : Option pour ne recevoir de notifications que si le saint du jour figure dans vos contacts (recherche insensible aux accents et à la casse).
-- **Navigation intuitive** : Accès rapide aux paramètres, à la liste complète des saints et aux informations développeur.
-
-## Caractéristiques techniques
-
-- **Jetpack Compose & Glance** : Interface utilisateur moderne et widget réactif.
-- **Architecture MVVM** : Séparation claire des responsabilités pour une meilleure maintenabilité.
-- **AlarmManager (Exact Alarms)** : Déclenchement des notifications à la seconde près.
-- **Room Database** : Stockage local et performant du calendrier des saints.
-- **Hilt** : Injection de dépendances pour un code modulaire.
-- **Jetpack DataStore** : Gestion robuste des préférences utilisateur.
-
-## Confidentialité
-
-L'analyse de vos contacts s'effectue exclusivement en local sur votre appareil. Aucune donnée personnelle n'est collectée ou transmise à des serveurs tiers.
+**Bonne Fête !** est une application Android permettant d'afficher le saint du jour sur son écran d'accueil grâce à un widget au style médiéval enluminé et de recevoir une notification quotidienne intelligente lorsqu'un contact de votre répertoire fête son prénom.
 
 ---
 
-## Informations Play Store
+## ✨ Fonctionnalités principales
 
-### Titre
-**Bonne Fête ! - Saints & Rappels**
+- **Widget d'écran d'accueil (Jetpack Glance)** :
+    - Affiche le saint du jour avec une typographie médiévale dorée (`medieval_font.otf`) sur un fond enluminé.
+    - Texte adaptatif selon les dimensions du widget (`SizeMode.Exact`).
+    - **Rafraîchissement automatique garanti à minuit** via `PreferencesGlanceStateDefinition` (`updateAppWidgetState`), `AlarmManager` (`goAsync()`), écoute des changements système de date/heure et cycle `updatePeriodMillis`.
+- **Notifications quotidiennes intelligentes** :
+    - Heure de rappel personnalisable à la minute près.
+    - **Détection exacte dans les contacts** : option permettant de ne recevoir une notification que si le prénom exact du saint du jour figure dans vos contacts (insensible aux accents et à la casse, sans faux positifs de sous-chaînes comme *Clément* / *Clémentine*).
+    - Bouton de test immédiat dans les paramètres.
+- **Calendrier complet des Saints** :
+    - Consultation hors-ligne des 366 jours de l'année (`saints.json` pré-chargé dans Room).
 
-### Description Courte
-Ne ratez plus la fête de vos contacts ! Widget élégant et notifications précises.
+---
 
-### Description Longue
-Bonne Fête est l'outil indispensable pour célébrer les traditions du calendrier français.
+## 🛠️ Stack Technique & Architecture
 
-- **Personnalisation** : Choisissez votre heure de rappel préférée.
-- **Intelligence** : L'appli détecte automatiquement si l'un de vos proches fête son prénom aujourd'hui.
-- **Esthétique** : Un widget épuré qui s'intègre parfaitement à votre thème Android.
+- **Namespace / Application ID** : `fr.antoinehory.bonnefete`
+- **SDK** : `minSdk = 26`, `targetSdk = 37`, `compileSdk = 37`
+- **Langage** : Kotlin `2.2.10` (`jvmTarget = 11`)
+- **Architecture** : Clean MVVM (`ui`, `domain`, `data`, `widget`, `worker`, `di`) — voir [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)
+- **Injection de dépendances** : Dagger Hilt (`2.59.2`) + `HiltWorker`
+- **UI & Widget** : Jetpack Compose (Material 3, Edge-to-Edge) & Jetpack Glance (`1.1.1`)
+- **Persistance** : Room Database (`AppDatabase`) + Jetpack DataStore Preferences
+- **Planification** : `AlarmManager` (Exact Alarms + `BootReceiver`) & `WorkManager`
 
-Simple, efficace et respectueuse de votre vie privée.
+---
+
+## 🚀 Compilation et Tests
+
+```bash
+# Compiler l'APK de debug
+./gradlew :app:assembleDebug
+
+# Lancer les tests unitaires JVM
+./gradlew :app:testDebugUnitTest
+
+# Générer le bundle AAB de release pour Google Play
+./gradlew :app:bundleRelease
+```
+
+---
+
+## 🔒 Confidentialité
+
+L'analyse de vos contacts s'effectue **exclusivement en local** sur votre appareil. Aucune donnée personnelle n'est collectée, stockée en ligne ou transmise à des serveurs tiers. Consultez la [Politique de Confidentialité](./POLITIQUE_DE_CONFIDENTIALITE.md) pour plus de détails.
+
+---
+
+## 👤 Auteur
+
+Développé par **Antoine « Crock » Hory**
+- 🌐 Site web : [antoinehory.fr](https://antoinehory.fr)
+- 📧 Contact : [contact@antoinehory.fr](mailto:contact@antoinehory.fr)
+- ☕ Soutenir le projet : [PayPal.me/kuroku](https://paypal.me/kuroku)

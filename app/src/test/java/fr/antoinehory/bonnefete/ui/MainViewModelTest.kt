@@ -1,5 +1,6 @@
 package fr.antoinehory.bonnefete.ui
 
+import androidx.work.WorkManager
 import fr.antoinehory.bonnefete.data.repository.SaintRepository
 import fr.antoinehory.bonnefete.data.repository.UserPreferencesRepository
 import fr.antoinehory.bonnefete.domain.WorkScheduler
@@ -23,6 +24,7 @@ class MainViewModelTest {
     private val saintRepository = mockk<SaintRepository>()
     private val preferencesRepository = mockk<UserPreferencesRepository>()
     private val workScheduler = mockk<WorkScheduler>()
+    private val workManager = mockk<WorkManager>(relaxed = true)
     private val testDispatcher = StandardTestDispatcher()
 
     @Before
@@ -32,6 +34,7 @@ class MainViewModelTest {
         every { preferencesRepository.notificationTime } returns flowOf(Pair(9, 0))
         every { preferencesRepository.onlyContacts } returns flowOf(true)
         every { saintRepository.getSaintForDate(any(), any()) } returns flowOf(null)
+        every { saintRepository.getAllSaints() } returns flowOf(emptyList())
         every { workScheduler.scheduleDailyUpdate(any(), any()) } returns Unit
     }
 
@@ -43,7 +46,12 @@ class MainViewModelTest {
     @Test
     fun `viewModel should initialize with correct state`() {
         // When
-        val viewModel = MainViewModel(saintRepository, preferencesRepository, workScheduler)
+        val viewModel = MainViewModel(
+            saintRepository = saintRepository,
+            preferencesRepository = preferencesRepository,
+            workScheduler = workScheduler,
+            workManager = workManager
+        )
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then

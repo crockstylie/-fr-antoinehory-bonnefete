@@ -1,9 +1,6 @@
 <fr-FR>
-- Amélioration de la fiabilité du Widget : mise à jour automatique du prénom chaque jour à minuit.
-- Notifications de haute précision : rappels garantis à l'heure exacte.
-- Recherche de contacts optimisée : détection intelligente ignorant les accents et les majuscules.
-- Design épuré : retrait du préfixe "Saint" dans le Widget pour un aspect plus moderne.
-- Résilience système : programmation automatique des alertes après un redémarrage du téléphone.
-- Support complet de l'affichage bord à bord (Edge-to-Edge).
-- 
+✨ Mise à jour 1.2.0 :
+• Correction du rafraîchissement automatique du widget à minuit (notamment sur les smartphones Samsung Galaxy) : le prénom du jour s'actualise désormais tout seul sans avoir besoin de redimensionner le widget.
+• Détection des contacts plus précise : recherche par prénom exact (ex. « Clément » ne déclenche plus de notification pour « Clémentine »).
+• Compatibilité Android 17 (SDK 37).
 </fr-FR>
